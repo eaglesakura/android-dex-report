@@ -3,11 +3,8 @@
 
 report_cp() {
 mkdir "$CIRCLE_TEST_REPORTS/junit/"
-mkdir "$CIRCLE_TEST_REPORTS/junit/debug"
-mkdir "$CIRCLE_TEST_REPORTS/junit/release"
 
-find . -type f -regex ".*/build/test-results/debug/.*xml" -exec cp {} $CIRCLE_TEST_REPORTS/junit/debug/ \;
-find . -type f -regex ".*/build/test-results/release/.*xml" -exec cp {} $CIRCLE_TEST_REPORTS/junit/release/ \;
+find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} $CIRCLE_TEST_REPORTS/junit/ \;
 cp -r ./build/reports "$CIRCLE_ARTIFACTS"
 }
 
