@@ -14,12 +14,21 @@ public class JsonParseTest extends GroovyTestCase {
         }
     }
 
-    public void test_サンプルのJSONをパースする() throws Exception {
+    void test_サンプルのJSONをパースする() throws Exception {
         def json = getTestFile("sample00.json");
 
         def parsed = JSON.decode(json.text, DexCountModel.class);
         assertNotNull(parsed);
         assertNotSame(parsed.methods, 0);
         assertNotSame(parsed.fields, 0);
+    }
+
+    void test_特定のpackageを取得する() throws Exception {
+        def parsed = JSON.decode(getTestFile("sample00.json").text, DexCountModel.class);
+        assertNotNull(parsed);
+
+        def appPackage = DexCountModel.find(parsed, "com.eaglesakura.andriders");
+        assertNotNull(appPackage);
+        assertEquals(appPackage.name, "andriders");
     }
 }
