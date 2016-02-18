@@ -8,17 +8,14 @@ import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
 
-public class DexCountGraphTask extends DefaultTask {
+public class DexReportTask extends DefaultTask {
     File source;
     List<Attention> attentions = new ArrayList<>();
 
     /**
-     * どの程度のメソッドを使い切ったら警告を出すか
+     * どの程度のメソッドを使い切ったら殺すか
      */
-    def worningLevel = 0.9;
-
-    def width = 600;
-    def height = 300;
+    def deadMethodNum = (int) (0xFFFF * 0.95);
 
     private DexCountModel rootModel;
 
@@ -35,29 +32,22 @@ public class DexCountGraphTask extends DefaultTask {
     /**
      * グラフ描画用のURLを構築する
      */
-    private def buildUrl() {
+    private void reportMethods() {
         int methods = rootModel.methods;
-
-        def values = "";
-        def names = "";
 
         Logger.out("All Methods :: ${rootModel.methods}")
         Logger.pushIndent()
         for (def att : attentions) {
             Logger.out("name(${att.getScreenName()}) methods(${att.methods})")
-            names += (names.empty ? "" : "|") + URLEncoder.encode(att.getScreenName(), "UTF-8");
-            values += (values.empty ? "" : ",") + att.methods;
             methods -= att.methods;
         }
-
-        values += ",${methods}"
-        names += "|Others"
+        Logger.out("name(Others) methods(${methods})")
         Logger.popIndent()
+        Logger.out("Method Using :: ${rootModel.methods} / ${deadMethodNum} = ${String.format("%.1f", (double) rootModel.methods / (double) deadMethodNum * 100)} %")
 
-        String url = "http://chart.apis.google.com/chart?cht=p&chs=${width}x${height}&chl=${names}&chd=t:${values}";
-
-        Logger.out("URL :: ${url}");
-        return url;
+        if (rootModel.methods > deadMethodNum) {
+            throw new Error("Method Over Using :: ${rootModel.methods} / ${deadMethodNum}");
+        }
     }
 
     /**
@@ -70,7 +60,7 @@ public class DexCountGraphTask extends DefaultTask {
     @TaskAction
     def onExecute() {
         load();
-        buildUrl();
+        reportMethods();
     }
 
     public class Attention {
