@@ -77,7 +77,7 @@ public class DexReportTask extends DefaultTask {
         }
 
         String getScreenName() {
-            return Util.isEmpty(mAlias) ? packageName : mAlias;
+            return CollectionUtil.isEmpty(mAlias) ? packageName : mAlias;
         }
 
         void load(DexCountModel root) {

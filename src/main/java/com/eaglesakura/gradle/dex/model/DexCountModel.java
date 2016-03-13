@@ -1,5 +1,6 @@
 package com.eaglesakura.gradle.dex.model;
 
+import com.eaglesakura.util.CollectionUtil;
 import com.eaglesakura.util.Util;
 
 import java.util.ArrayList;
@@ -29,7 +30,7 @@ public class DexCountModel {
     }
 
     public static DexCountModel findChild(DexCountModel parent, String name) {
-        if (!Util.isEmpty(parent.children)) {
+        if (!CollectionUtil.isEmpty(parent.children)) {
             for (DexCountModel child : parent.children) {
                 if (child.name.equals(name)) {
                     return child;
@@ -40,7 +41,7 @@ public class DexCountModel {
     }
 
     public static DexCountModel find(DexCountModel root, String packageName) {
-        List<String> packs = Util.convert(packageName.split("\\."));
+        List<String> packs = CollectionUtil.asList(packageName.split("\\."));
 
         DexCountModel packRoot = findChild(root, packs.remove(0));
 
@@ -57,7 +58,7 @@ public class DexCountModel {
      * @param current 現在の階層
      */
     public static void buildDepth(DexCountModel current) {
-        if (Util.isEmpty(current.children)) {
+        if (CollectionUtil.isEmpty(current.children)) {
             return;
         }
 
