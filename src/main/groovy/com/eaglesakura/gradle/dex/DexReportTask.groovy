@@ -3,10 +3,9 @@ package com.eaglesakura.gradle.dex
 import com.eaglesakura.gradle.dex.model.DexCountModel
 import com.eaglesakura.json.JSON
 import com.eaglesakura.tool.log.Logger
-import com.eaglesakura.util.Util
+import com.eaglesakura.util.CollectionUtil
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
-
 
 public class DexReportTask extends DefaultTask {
     File source;
@@ -15,7 +14,7 @@ public class DexReportTask extends DefaultTask {
     /**
      * どの程度のメソッドを使い切ったら殺すか
      */
-    def deadMethodNum = (int) (0xFFFF * 0.95);
+    def deadMethodNum = (int) ((double) 0xFFFF * 0.95);
 
     private DexCountModel rootModel;
 
